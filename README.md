@@ -27,7 +27,7 @@ This project challenges AI systems to play Pokémon Blue by only seeing the game
    - Sends button commands back to the emulator
    - Enforces rate limiting to prevent API overload
 
-3. **LLM Provider** (Gemini) acts as the "brain":
+3. **Local LLM Provider** acts as the "brain":
    - Analyzes game screenshots with enhanced visibility
    - Uses game state context to make informed decisions
    - Decides which buttons to press
@@ -37,32 +37,85 @@ This project challenges AI systems to play Pokémon Blue by only seeing the game
 
 1. **Install dependencies**:
 ```bash
-pip install "google-generativeai>=0.3.0" pillow openai anthropic python-dotenv
+conda activate blue
+pip install -r requirements.txt
 ```
 
-2. **Set up your config**:
-   - Edit `config.json` with your Gemini API key and settings:
+2. **Start a local LLM server**:
+
+   LM Studio:
+   - Load `google/gemma-4-12b` or `google/gemma-4-e2b` in LM Studio.
+   - Start the local server.
+   - The config expects the OpenAI-compatible base URL: `http://127.0.0.1:1234/v1`.
+
+   Ollama:
+   - Start Ollama on the machine at `100.87.135.76`.
+   - The config expects the OpenAI-compatible base URL: `http://100.87.135.76:11434/v1`.
+   - Available configured models include `qwen3-vl:8b-instruct`, `qwen3-vl:32b`, `qwen3-embedding:8b`, `qwen3.6:35b-a3b-q4_K_M`, `glm-4.7-flash:q4_K_M`, `qwen3.6:27b`, `gemma4:31b`, `gemma4:26b`, and `nemotron-3-nano:30b`.
+
+   The model must support images. Text-only models cannot play from screenshots.
+
+3. **Set up your config**:
+   - Run the endpoint configurator:
+```bash
+conda activate blue
+python configure_endpoint.py
+```
+
+   - The script probes:
+     - `http://127.0.0.1:1234/v1`
+     - `http://100.87.135.76:11434/v1`
+   - It lists available models, marks likely vision models, lets you select one, and updates `config.json`.
+   - To probe a different OpenAI-compatible endpoint:
+```bash
+python configure_endpoint.py --endpoint http://127.0.0.1:8000/v1
+```
+   - To run a small image smoke test on the selected model:
+```bash
+python configure_endpoint.py --smoke-test
+```
+
+   `config.json` is also already set to LM Studio `google/gemma-4-12b` by default:
 ```json
 {
   "game_title": "Pokémon Blue",
   "rom_path": "~/Downloads/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).sgb",
+  "llm_provider": "lmstudio_gemma_4_12b",
   "host": "127.0.0.1",
   "port": 8888,
-  "decision_cooldown": 1.0,
+  "decision_cooldown": 5,
   "screenshot_path": "data/screenshots/screenshot.png",
-  "notepad_path": "data/notepad/game_memory.md",
+  "notepad_path": "notepad.txt",
   "debug_mode": true,
   "providers": {
-    "google": {
-      "api_key": "YOUR_GEMINI_API_KEY",
-      "model_name": "gemini-2.0-flash",
-      "max_tokens": 1024
+    "lmstudio_gemma_4_12b": {
+      "provider": "openai_compatible",
+      "base_url": "http://127.0.0.1:1234/v1",
+      "api_key": "lm-studio",
+      "model_name": "google/gemma-4-12b",
+      "max_tokens": 1024,
+      "temperature": 0.2,
+      "timeout": 120,
+      "image_detail": "low"
     }
   }
 }
 ```
 
-3. **Update the Lua script path**:
+   To switch models, change only `llm_provider` to one of:
+   - `lmstudio_gemma_4_12b`
+   - `lmstudio_gemma_4_e2b`
+   - `ollama_qwen3_vl_8b_instruct`
+   - `ollama_qwen3_vl_32b`
+   - `ollama_qwen3_embedding_8b`
+   - `ollama_qwen3_6_35b_a3b_q4_k_m`
+   - `ollama_glm_4_7_flash_q4_k_m`
+   - `ollama_qwen3_6_27b`
+   - `ollama_gemma4_31b`
+   - `ollama_gemma4_26b`
+   - `ollama_nemotron_3_nano_30b`
+
+4. **Update the Lua script path**:
    - Open `emulator/script.lua` in any text editor
    - Find and change the following line to match your system's full path:
    ```lua
@@ -70,12 +123,13 @@ pip install "google-generativeai>=0.3.0" pillow openai anthropic python-dotenv
    ```
    - Example: `local screenshotPath = "/Users/yourname/Documents/LLM-Pokemon-Blue/data/screenshots/screenshot.png"`
 
-4. **Run in the correct order**:
+5. **Run in the correct order**:
    - Start mGBA and load your Pokémon Blue ROM from `~/Downloads/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).sgb`
    - Start playing the game
    - In a separate terminal, run the controller:
    ```bash
-   python google_controller.py
+   conda activate blue
+   python local_controller.py
    ```
    - Return to mGBA, open Tools > Script Viewer
    - Load and run the `script.lua` file
@@ -91,18 +145,18 @@ pip install "google-generativeai>=0.3.0" pillow openai anthropic python-dotenv
 - **Image Enhancement**: Screenshots are processed to improve visibility and detail recognition
 - **Synchronization**: Better communication flow between emulator and controller
 
-## Supported LLM Provider
+## Supported Local Providers
 
-- Google Gemini (gemini-2.0-flash)
-
-*Note: This version currently only supports Google's Gemini API. Removed support for other LLM's while I solve it for Gemini as the API is free.*
+- LM Studio at `http://127.0.0.1:1234/v1`
+- Ollama's OpenAI-compatible endpoint at `http://100.87.135.76:11434/v1`
+- Custom local servers that accept OpenAI-compatible image messages at `/v1/chat/completions`
 
 ## Tips
 
-- Adjust the `decision_cooldown` in your config based on your Gemini API quota:
-  - Recommended: 3-6 seconds for most Gemini API keys
-  - If you encounter rate limiting: increase to 6+ seconds
-- Consider API costs when running for extended time
+- Use a vision-capable model. If your model cannot understand images, the controller will receive unusable decisions.
+- Local models often do not support native tool calls, so the controller asks for strict JSON and converts it into button/notepad actions.
+- Adjust `decision_cooldown` based on your local model speed. Start with 5 seconds and increase it if your server falls behind.
+- If LM Studio returns model-not-found errors, copy the exact model id shown in the LM Studio server page into `model_name`.
 
 ## Contributing
 

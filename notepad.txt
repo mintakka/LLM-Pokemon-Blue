@@ -1,25 +1,26 @@
-# Pokémon Red Game Progress
-
-Game started: 2025-03-23 23:43:53
+# Pokémon Blue Game Progress
 
 ## Current Objectives
-- Enter my name 'Gemini' and give my rival a name.
+- Play Pokémon Blue from whatever screen or save state is currently loaded.
+- Make steady game progress: start or continue the game, navigate overworld areas, advance dialogue, battle when required, and pursue story or exploration objectives.
+- Avoid loops by changing strategy when repeated inputs do not change the screen.
 
-## Exit my house
-
-## Current Objectives
-- Find Professor Oak to get first Pokémon
-- Start Pokémon journey
+## Operating Policy
+- Classify the current screen first: title, menu, dialogue, overworld, battle, naming, or unknown.
+- On title screens, press START.
+- In dialogue, press A to advance.
+- In menus, use directions to select and A to confirm.
+- In the overworld, prefer movement toward paths, exits, doors, stairs, items, NPCs, or signs.
+- Use A in the overworld only when directly facing an interactable object, NPC, sign, item, or prompt.
 
 ## Current Location
-- Starting in player's house in Pallet Town
+- Unknown; infer from the current screenshot and game state.
 
 ## Game Progress
-- Just beginning the adventure
+- Unknown; infer from the current screenshot and update these notes as new facts are discovered.
 
 ## Items
-- None yet
+- Unknown.
 
 ## Pokémon Team
-- None yet
-
+- Unknown.

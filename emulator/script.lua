@@ -2,11 +2,15 @@
 -- Socket setup for communication with Python controller
 statusSocket = nil
 waitingForRequest = true -- New flag to indicate if we're waiting for controller request
+socketConnected = false
+setupComplete = false
+local lastConnectAttemptFrame = -9999
+local reconnectIntervalFrames = 120
 
 -- Global variables for key press tracking
 local currentKeyIndex = nil
 local keyPressStartFrame = 0
-local keyPressFrames = 2   -- Hold keys for 2 frames
+local keyPressFrames = 8   -- Hold keys long enough for title/menu screens to register
 
 -- Path settings with absolute path.
 local screenshotPath = "/Users/matt/Projects/LLM-Pokemon-Blue/data/screenshots/screenshot.png"
@@ -22,10 +26,12 @@ local memoryAddresses = {
 
 -- Debug buffer setup
 function setupBuffer()
+    if setupComplete and debugBuffer then return end
     debugBuffer = console:createBuffer("Debug")
     debugBuffer:setSize(100, 64)
     debugBuffer:clear()
     debugBuffer:print("Debug buffer initialized\n")
+    setupComplete = true
 end
 
 -- Direction value to text conversion
@@ -126,11 +132,22 @@ end
 -- Socket management functions
 function sendMessage(messageType, content)
     if statusSocket then
-        statusSocket:send(messageType .. "||" .. content .. "\n")
+        local ok, err = pcall(function()
+            statusSocket:send(messageType .. "||" .. content .. "\n")
+        end)
+        if not ok then
+            debugBuffer:print("Failed to send socket message: " .. tostring(err) .. "\n")
+            stopSocket()
+        end
     end
 end
 
 function socketReceived()
+    if not statusSocket then
+        socketConnected = false
+        return
+    end
+
     local data, err = statusSocket:receive(1024)
     
     if data then
@@ -184,11 +201,22 @@ end
 function stopSocket()
     if not statusSocket then return end
     debugBuffer:print("Closing socket connection\n")
-    statusSocket:close()
+    pcall(function()
+        statusSocket:close()
+    end)
     statusSocket = nil
+    socketConnected = false
 end
 
 function startSocket()
+    if statusSocket and socketConnected then return end
+
+    local currentFrame = emu:currentFrame()
+    if currentFrame - lastConnectAttemptFrame < reconnectIntervalFrames then
+        return
+    end
+    lastConnectAttemptFrame = currentFrame
+
     debugBuffer:print("Connecting to controller at 127.0.0.1:8888...\n")
     statusSocket = socket.tcp()
     
@@ -203,6 +231,7 @@ function startSocket()
     
     -- Connect to the controller
     if statusSocket:connect("127.0.0.1", 8888) then
+        socketConnected = true
         debugBuffer:print("Successfully connected to controller\n")
         -- Notify controller we're ready for first instruction
         sendMessage("ready", "true")
@@ -213,9 +242,16 @@ function startSocket()
     end
 end
 
+function maintainSocket()
+    if not statusSocket or not socketConnected then
+        startSocket()
+    end
+end
+
 -- Add callbacks to run our functions
 callbacks:add("start", setupBuffer)
 callbacks:add("start", startSocket)
+callbacks:add("frame", maintainSocket)
 callbacks:add("frame", handleKeyPress)
 
 -- Initialize on script load

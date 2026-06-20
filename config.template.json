@@ -1,23 +1,140 @@
 {
     "game_title": "Pokémon Blue",
     "rom_path": "~/Downloads/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).sgb",
-    "llm_provider": "${DEFAULT_LLM_PROVIDER}",
+    "llm_provider": "ollama_qwen3_vl_8b_instruct",
     "providers": {
-      "gemini": {
-        "api_key": "${GEMINI_API_KEY}",
-        "model_name": "${GEMINI_MODEL}",
-        "max_tokens": 1024
-      },
-      "openai": {
-        "api_key": "${OPENAI_API_KEY}",
-        "model_name": "${OPENAI_MODEL}",
-        "max_tokens": 1024
-      },
-      "anthropic": {
-        "api_key": "${ANTHROPIC_API_KEY}",
-        "model_name": "${ANTHROPIC_MODEL}",
-        "max_tokens": 1024
-      }
+        "lmstudio_gemma_4_12b": {
+            "provider": "openai_compatible",
+            "base_url": "http://127.0.0.1:1234/v1",
+            "api_key": "lm-studio",
+            "model_name": "google/gemma-4-12b",
+            "max_tokens": 1024,
+            "temperature": 0.2,
+            "timeout": 120,
+            "image_detail": "low",
+            "connect_timeout": 10,
+            "force_ipv4": true
+        },
+        "lmstudio_gemma_4_e2b": {
+            "provider": "openai_compatible",
+            "base_url": "http://127.0.0.1:1234/v1",
+            "api_key": "lm-studio",
+            "model_name": "google/gemma-4-e2b",
+            "max_tokens": 1024,
+            "temperature": 0.2,
+            "timeout": 120,
+            "image_detail": "low",
+            "connect_timeout": 10,
+            "force_ipv4": true
+        },
+        "ollama_qwen3_vl_8b_instruct": {
+            "provider": "openai_compatible",
+            "base_url": "http://100.87.135.76:11434/v1",
+            "api_key": "ollama",
+            "model_name": "qwen3-vl:8b-instruct",
+            "max_tokens": 1024,
+            "temperature": 0.2,
+            "timeout": 180,
+            "image_detail": "low",
+            "connect_timeout": 10,
+            "force_ipv4": true
+        },
+        "ollama_qwen3_vl_32b": {
+            "provider": "openai_compatible",
+            "base_url": "http://100.87.135.76:11434/v1",
+            "api_key": "ollama",
+            "model_name": "qwen3-vl:32b",
+            "max_tokens": 1024,
+            "temperature": 0.2,
+            "timeout": 240,
+            "image_detail": "low",
+            "connect_timeout": 10,
+            "force_ipv4": true
+        },
+        "ollama_qwen3_embedding_8b": {
+            "provider": "openai_compatible",
+            "base_url": "http://100.87.135.76:11434/v1",
+            "api_key": "ollama",
+            "model_name": "qwen3-embedding:8b",
+            "max_tokens": 1024,
+            "temperature": 0.2,
+            "timeout": 120,
+            "image_detail": "low",
+            "connect_timeout": 10,
+            "force_ipv4": true
+        },
+        "ollama_qwen3_6_35b_a3b_q4_k_m": {
+            "provider": "openai_compatible",
+            "base_url": "http://100.87.135.76:11434/v1",
+            "api_key": "ollama",
+            "model_name": "qwen3.6:35b-a3b-q4_K_M",
+            "max_tokens": 1024,
+            "temperature": 0.2,
+            "timeout": 240,
+            "image_detail": "low",
+            "connect_timeout": 10,
+            "force_ipv4": true
+        },
+        "ollama_glm_4_7_flash_q4_k_m": {
+            "provider": "openai_compatible",
+            "base_url": "http://100.87.135.76:11434/v1",
+            "api_key": "ollama",
+            "model_name": "glm-4.7-flash:q4_K_M",
+            "max_tokens": 1024,
+            "temperature": 0.2,
+            "timeout": 240,
+            "image_detail": "low",
+            "connect_timeout": 10,
+            "force_ipv4": true
+        },
+        "ollama_qwen3_6_27b": {
+            "provider": "openai_compatible",
+            "base_url": "http://100.87.135.76:11434/v1",
+            "api_key": "ollama",
+            "model_name": "qwen3.6:27b",
+            "max_tokens": 1024,
+            "temperature": 0.2,
+            "timeout": 240,
+            "image_detail": "low",
+            "connect_timeout": 10,
+            "force_ipv4": true
+        },
+        "ollama_gemma4_31b": {
+            "provider": "openai_compatible",
+            "base_url": "http://100.87.135.76:11434/v1",
+            "api_key": "ollama",
+            "model_name": "gemma4:31b",
+            "max_tokens": 1024,
+            "temperature": 0.2,
+            "timeout": 240,
+            "image_detail": "low",
+            "connect_timeout": 10,
+            "force_ipv4": true
+        },
+        "ollama_gemma4_26b": {
+            "provider": "openai_compatible",
+            "base_url": "http://100.87.135.76:11434/v1",
+            "api_key": "ollama",
+            "model_name": "gemma4:26b",
+            "max_tokens": 1024,
+            "temperature": 0.2,
+            "timeout": 240,
+            "image_detail": "low",
+            "connect_timeout": 10,
+            "force_ipv4": true
+        },
+        "ollama_nemotron_3_nano_30b": {
+            "provider": "openai_compatible",
+            "base_url": "http://100.87.135.76:11434/v1",
+            "api_key": "ollama",
+            "model_name": "nemotron-3-nano:30b",
+            "max_tokens": 1024,
+            "temperature": 0.2,
+            "timeout": 240,
+            "image_detail": "low",
+            "connect_timeout": 10,
+            "force_ipv4": true
+        }
     },
     "host": "127.0.0.1",
     "port": 8888,
@@ -26,5 +143,7 @@
     "decision_cooldown": 5,
     "thinking_history_max_chars": 20000,
     "thinking_history_keep_entries": 5,
-    "debug_mode": true
-  }
+    "debug_mode": true,
+    "crop_sgb_border": true,
+    "battle_llm_provider": "ollama_qwen3_6_35b_a3b_q4_k_m"
+}
