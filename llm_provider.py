@@ -115,7 +115,7 @@ class OpenAIProvider(LLMProvider):
                 response = self.client.chat.completions.create(
                     model=self.config["model_name"],
                     messages=[
-                        {"role": "system", "content": "You are an AI playing Pokémon Fire Red."},
+                        {"role": "system", "content": f"You are an AI playing {self.config.get('game_title', 'Pokémon Blue')}."},
                         {"role": "user", "content": prompt}
                     ]
                 )
@@ -159,7 +159,7 @@ class OpenAIProvider(LLMProvider):
             response = self.client.chat.completions.create(
                 model=self.config["model_name"],
                 messages=[
-                    {"role": "system", "content": "You are an AI playing Pokémon Fire Red."},
+                    {"role": "system", "content": f"You are an AI playing {self.config.get('game_title', 'Pokémon Blue')}."},
                     {"role": "user", "content": message_content}
                 ]
             )

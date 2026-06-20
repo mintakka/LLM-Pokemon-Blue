@@ -48,10 +48,11 @@ class ToolCall:
 
 class GeminiClient:
     """Client specifically for communicating with Gemini"""
-    def __init__(self, api_key: str, model_name: str, max_tokens: int = 1024):
+    def __init__(self, api_key: str, model_name: str, max_tokens: int = 1024, game_title: str = "Pokémon Blue"):
         self.api_key = api_key
         self.model_name = model_name
         self.max_tokens = max_tokens
+        self.game_title = game_title
         self._setup_client()
     
     def _setup_client(self):
@@ -70,8 +71,8 @@ class GeminiClient:
         
         model = self.client.GenerativeModel(model_name=self.model_name)
         
-        system_message = """
-        You are playing Pokémon Red. Your job is to press buttons to control the game.
+        system_message = f"""
+        You are playing {self.game_title}. Your job is to press buttons to control the game.
         
         IMPORTANT: After analyzing the screenshot, you MUST use the press_button function.
         You are REQUIRED to use the press_button function with every response.
@@ -183,12 +184,14 @@ class PokemonController:
         if 'screenshot_path' in self.config and not os.path.isabs(self.config['screenshot_path']):
             self.config['screenshot_path'] = os.path.abspath(self.config['screenshot_path'])
         
-        provider_config = self.config["providers"]["google"]
+        self.game_title = self.config.get("game_title", "Pokémon Blue")
+        provider_config = self.config["providers"].get("google") or self.config["providers"]["gemini"]
         
         self.llm_client = GeminiClient(
             api_key=provider_config["api_key"],
             model_name=provider_config["model_name"],
-            max_tokens=provider_config.get("max_tokens", 1024)
+            max_tokens=provider_config.get("max_tokens", 1024),
+            game_title=self.game_title
         )
         
         self.server_socket = None
@@ -322,7 +325,7 @@ class PokemonController:
             os.makedirs(os.path.dirname(self.notepad_path), exist_ok=True)
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
             with open(self.notepad_path, 'w') as f:
-                f.write("# Pokémon Red Game Progress\n\n")
+                f.write(f"# {self.game_title} Game Progress\n\n")
                 f.write(f"Game started: {timestamp}\n\n")
                 f.write("## Current Objectives\n- Enter my name 'Gemini' and give my rival a name.\n\n")
                 f.write("## Exit my house\n\n")
@@ -421,7 +424,7 @@ class PokemonController:
 
     def get_map_name(self, map_id):
         """Get map name from ID, with fallback for unknown maps"""
-        # Pokémon Red/Blue map IDs (incomplete, add more as needed)
+        # Pokémon Blue map IDs (incomplete, add more as needed)
         map_names = {
             0: "Pallet Town",
             1: "Viridian City",
@@ -431,8 +434,8 @@ class PokemonController:
             13: "Route 2",
             14: "Route 3",
             15: "Route 4",
-            37: "Red's House 1F",
-            38: "Red's House 2F",
+            37: "Player's House 1F",
+            38: "Player's House 2F",
             39: "Blue's House",
             40: "Oak's Lab",
             # Add more map IDs as you explore the game
@@ -483,7 +486,7 @@ class PokemonController:
             final_image = brightness_enhancer.enhance(1.1)  # Increase brightness by 10%
             
             prompt = f"""
-            You are an AI playing Pokémon Red, you are the character with the red hat. Look at this screenshot and choose ONE button to press.
+            You are an AI playing {self.game_title}, you are the player character with the cap. Look at this screenshot and choose ONE button to press.
             
             ## Current Location
             You are in {current_map}

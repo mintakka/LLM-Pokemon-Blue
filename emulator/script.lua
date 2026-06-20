@@ -8,10 +8,11 @@ local currentKeyIndex = nil
 local keyPressStartFrame = 0
 local keyPressFrames = 2   -- Hold keys for 2 frames
 
--- Path settings with absolute path (change this to your path)
-local screenshotPath = "/Users/alex/Documents/LLM-Pokemon-Red-Benchmark/data/screenshots/screenshot.png"
+-- Path settings with absolute path.
+local screenshotPath = "/Users/matt/Projects/LLM-Pokemon-Blue/data/screenshots/screenshot.png"
+local screenshotDir = screenshotPath:match("(.+)/[^/]+$")
 
--- Memory addresses for Pokemon Red (Game Boy)
+-- Memory addresses for Pokemon Blue (Game Boy)
 local memoryAddresses = {
     playerDirection = 0xC109,  -- Direction facing (0:Down, 4:Up, 8:Left, 12:Right)
     playerX = 0xD362,          -- X coordinate on map
@@ -63,7 +64,7 @@ end
 -- Screenshot capture function with game state information
 function captureAndSendScreenshot()
     -- Create directory if it doesn't exist
-    os.execute("mkdir -p \"/Users/alex/Documents/LLM-Pokemon-Red-Benchmark/data/screenshots\"")
+    os.execute("mkdir -p \"" .. screenshotDir .. "\"")
     
     -- Take the screenshot
     emu:screenshot(screenshotPath)
@@ -223,6 +224,6 @@ if emu then
     startSocket()
     
     -- Create directory on startup
-    os.execute("mkdir -p \"/Users/alex/Documents/LLM-Pokemon-Red-Benchmark/data/screenshots\"")
+    os.execute("mkdir -p \"" .. screenshotDir .. "\"")
     debugBuffer:print("Created screenshot directories\n")
 end

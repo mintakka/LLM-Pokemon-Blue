@@ -1,4 +1,6 @@
 {
+    "game_title": "Pokémon Blue",
+    "rom_path": "~/Downloads/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).sgb",
     "llm_provider": "${DEFAULT_LLM_PROVIDER}",
     "providers": {
       "gemini": {

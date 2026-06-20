@@ -1,4 +1,4 @@
--- Pokemon Red Memory Test Script for mGBA
+-- Pokemon Blue Memory Test Script for mGBA
 -- This script reads player position, direction and map data from memory
 
 -- Socket setup for communication with Python controller
@@ -6,7 +6,7 @@ statusSocket = nil
 lastUpdateTime = 0
 updateInterval = 1  -- Send updates every second
 
--- Memory addresses for Pokemon Red (Game Boy)
+-- Memory addresses for Pokemon Blue (Game Boy)
 local memoryAddresses = {
     playerDirection = 0xC109,  -- Direction facing (0:Down, 4:Up, 8:Left, 12:Right)
     playerX = 0xD362,          -- X coordinate on map

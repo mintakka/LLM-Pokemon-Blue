@@ -23,7 +23,7 @@ function captureAndSendScreenshot()
         
         -- Take screenshot and save to file
         -- Make sure path exists and is writable
-        local screenshotPath = "/Users/alex/Documents/LLM-Pokemon-Red-Benchmark/data/screenshots/screenshot.png"
+        local screenshotPath = "/Users/matt/Projects/LLM-Pokemon-Blue/data/screenshots/screenshot.png"
         emu:screenshot(screenshotPath)
         
         -- Send message to controller if socket is connected

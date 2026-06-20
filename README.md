@@ -1,10 +1,10 @@
-# LLM-Pokemon-Red-Benchmark
+# LLM-Pokemon-Blue-Benchmark
 
-> An AI benchmark that evaluates LLMs by having them play Pokémon Red through visual understanding and decision making
+> An AI benchmark that evaluates LLMs by having them play Pokémon Blue through visual understanding and decision making
 
 ## Project Vision
 
-This project challenges AI systems to play Pokémon Red by only seeing the game screen, just like a human would. It tests the AI's ability to understand visuals, make decisions, remember context, plan strategies, and adapt to changing situations - all valuable skills that translate to real-world AI applications.
+This project challenges AI systems to play Pokémon Blue by only seeing the game screen, just like a human would. It tests the AI's ability to understand visuals, make decisions, remember context, plan strategies, and adapt to changing situations - all valuable skills that translate to real-world AI applications.
 
 ## Demo
 
@@ -12,7 +12,7 @@ This project challenges AI systems to play Pokémon Red by only seeing the game 
 
 ## How It Works
 
-1. **Game Emulator (mGBA)** runs Pokémon Red with a Lua script that:
+1. **Game Emulator (mGBA)** runs Pokémon Blue with a Lua script that:
    - Takes screenshots on request
    - Captures game state information (player position, direction, map ID)
    - Receives button commands from the controller
@@ -44,6 +44,8 @@ pip install "google-generativeai>=0.3.0" pillow openai anthropic python-dotenv
    - Edit `config.json` with your Gemini API key and settings:
 ```json
 {
+  "game_title": "Pokémon Blue",
+  "rom_path": "~/Downloads/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).sgb",
   "host": "127.0.0.1",
   "port": 8888,
   "decision_cooldown": 1.0,
@@ -61,15 +63,15 @@ pip install "google-generativeai>=0.3.0" pillow openai anthropic python-dotenv
 ```
 
 3. **Update the Lua script path**:
-   - Open `script.lua` in any text editor
+   - Open `emulator/script.lua` in any text editor
    - Find and change the following line to match your system's full path:
    ```lua
-   local screenshotPath = "/YOUR/FULL/PATH/TO/LLM-Pokemon-Red-Benchmark/data/screenshots/screenshot.png"
+   local screenshotPath = "/Users/matt/Projects/LLM-Pokemon-Blue/data/screenshots/screenshot.png"
    ```
-   - Example: `local screenshotPath = "/Users/yourname/Documents/LLM-Pokemon-Red-Benchmark/data/screenshots/screenshot.png"`
+   - Example: `local screenshotPath = "/Users/yourname/Documents/LLM-Pokemon-Blue/data/screenshots/screenshot.png"`
 
 4. **Run in the correct order**:
-   - Start mGBA and load your Pokémon Red ROM
+   - Start mGBA and load your Pokémon Blue ROM from `~/Downloads/ROM/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).sgb`
    - Start playing the game
    - In a separate terminal, run the controller:
    ```bash
